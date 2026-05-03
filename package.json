@@ -11,5 +11,13 @@
   "description": "",
   "dependencies": {
     "express": "^5.2.1"
-  }
+  },
+  // We added this to make sure that "node" knows that we are not using the newer EJS syntax.
+  // What was the need to specify this explicitly ? 
+    // Node supports two incompatibly syntaxs that is they cannot be interchange
+    // if we would not have specified it the 'node' parser would have assume that is the 'CommonJS'(the other syntax)
+    // but would have encountered keywords like export or import and thrown us a warning.
+  // the alternative solution would have been to add .mjs as extension to whichever file has the new syntax style (EJS)
+  // and .js to the files that uses the older syntax style 'Common js' ( but that would have been a hack or like a workaround)
+  "type": "module" 
 }
