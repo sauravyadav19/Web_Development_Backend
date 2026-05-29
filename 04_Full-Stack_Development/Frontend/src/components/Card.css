@@ -1,0 +1,66 @@
+.cardContainer {
+  background-color: #DCD7C9;
+  width: 400px;
+  height: 350px;
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+.cardContainer p {
+  margin: 0;
+}
+
+#title {
+  background-color: #A27B5C;
+  font-size: large;
+  font-weight: 800;
+  font-family: cursive;
+
+  flex: 1;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+}
+
+#descriptionContainer {
+  flex: 4;
+
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 0.5rem;
+
+  width: 100%;
+  min-height: 0;
+
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+#descriptionImage {
+  flex: 4;
+
+  min-width: 0;
+  height: 100%;
+
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+#descriptionInfo {
+  flex: 6;
+
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  overflow-wrap: break-word;
+  word-break: break-word;
+}

@@ -1,0 +1,10 @@
+.cardMainContainer{
+    padding: 20px 20px;
+    background-color: #2C3930;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap:2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
