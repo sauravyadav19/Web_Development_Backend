@@ -3,83 +3,71 @@ import express from "express";
 // Instanatiate the express you have brought using its constructor
 const app = express();
 
-// a temporary storage for now, before configuring database.
-let card = []
+// Switching from temporary to our persistent database.
+import cardModel from "./models/card.model.js"
 // Gives our express server ability to "read and understand" JSON data.
 app.use(express.json())
 
 //Request Point to fetch all cards
-app.get('/api/card',(request,response)=>{
+app.get('/api/card', async (request,response)=>{
+    const allCards = await cardModel.find()
     response.send({
         "message":"Succefully fetcted all Cards",
-        "data": card
+        "data": allCards
     });
 })
 
 // Request point to create a new Carrd
-app.post('/api/card', (request,response)=>{
+app.post('/api/card', async(request,response)=>{
     const {title,img,info} = request.body;
-    card.push({title,img,info})
+    const newEntry = cardModel({title:title, img:img, info:info})
+    await newEntry.save()
+    // we could have done something like this as well to create a new entry
+    // await cardModel.create({title:title, img:img, info:info})
     response.status(201).send({
         "message": "The Item was successfully created",
-        "data" : card[card.length - 1]
+        "data" : newEntry
     })
 })
 
-// Request point to Delete a Card (We are specifying what value we wanted to be deleted uisng :index in url)
-app.delete('/api/card/:index', (request,response)=>{
-    const index = Number(request.params.index)
+// Request point to Delete a Card (We are specifying what value we wanted to be deleted uisng :id in url)
+app.delete('/api/card/:id', async(request,response)=>{
+    const id = request.params.id
+    const entry = await cardModel.find({_id: id})
 
-    // In case index sepcified is out of range of the length of the "database" variable.
-    if(index >= card.length){
-        return response.send({"message": "404 Error, index NOT found"})
+    // In case id sepcified is not present in database we return we a 404 error
+    if(entry.length <= 0){
+        return response.send({"message": "404 Error, id NOT found"})
     }
 
-    // We are just filtering out value in a new array other than the value at the specified index 
-    const afterDelete = [];
-    for(let i = 0; i < card.length; i++){
-        if(index == i){
-            continue;
-        }
-        afterDelete.push(card[i]); 
-    }
-    // We are now moving those value to our "database" variable
-    card = afterDelete;
+    await cardModel.deleteOne({_id:id})
     return response.send({"message":"The Card was Deleted"});
 })
 
-// Request point to update a value, similar to delete we are specifying what value to update using :index in url
-app.patch('/api/card/:index', (request,response)=>{
-    const index = Number(request.params.index);
-    // in case index is greater than values in the cards
-    // that means index is invalid and we do not need to go any further
-    if(index >= card.length){
-        return response.send({"message": "404 Error, index NOT found"})
+// Request point to update a value, similar to delete we are specifying what value to update using :id in url
+app.patch('/api/card/:id', async(request,response)=>{
+    const id = request.params.id;
+    const entry = await cardModel.find({_id:id})
+
+    // in case id not present in database we return with 404 error
+    if(entry.length <= 0){
+        return response.send({"message": "404 Error, id NOT found"})
     }
 
     const {title, info, img} = request.body;
-    //Trying to find which values has been asked to update, and building an object 
-    // this object will only have values that are provided by the user to update
-    let givenValues = []
-    if(title !== undefined){
-        givenValues.push({"title":title})
-    }
-    if(info !== undefined){
-        givenValues.push({"info":info})
-    }
-    if(img !== undefined){
-        givenValues.push({"img":img})
-    }
 
     //  Updating the values
-    if(givenValues.length > 0){
-        for(let i = 0; i < givenValues.length; i++){
-            // destructring object to get values.
-            const [key,value] = Object.entries(givenValues[i])[0]
-            card[index][key] = value
-        }
-    }
-    return response.send({"message":"The update has been done!", "data":card[index]})
+    // we do not have to build any givenValues[], as mongoose takes care of that
+    // when we are updating and it finds any value to be empty is just remove it (refer to documentation for this. https://mongoosejs.com/docs/tutorials/findoneandupdate.html)
+    const newEntry = await cardModel.findOneAndUpdate({_id:id}, 
+        {$set: {
+            title:title,
+            info:info,
+            img:img
+        }}, {
+            returnDocument:'after' // this tells what object we want after this 'document' / entry is saved, using returnDocument: 'before' would have retured this entry before update.
+        })
+    return response.send({"message":"The update has been done!", "update Entry": newEntry})
 
 })
 
