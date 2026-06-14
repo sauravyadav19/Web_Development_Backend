@@ -14,6 +14,18 @@ import cors from "cors";
 // with this now browser will not block CROS request coming from our frontend to this server.
 app.use(cors())
 
+// this is express middleware that let us our server serve a folder 
+// so once you use this express.static("<nameOfTheFile>"), you can simply do things like
+// localhost:5173/images/someImage
+// localhost:5173/file/someFile
+// Given that <nameOfTheFile> has these directory and files in it.
+// so here we are serving our pubic folder that contains the build of the frontend (npm run build)
+// app.use(express.static('./public'))
+// We can do this but as we know from server.js that we need to be smart about our paths, as they depend on where we start our server.js from so we need to give it a realitve part.
+const __dirname = import.meta.dirname
+import path from "path"
+app.use(express.static(path.join(__dirname,'../public')))
+
 //Request Point to fetch all cards
 app.get('/api/card', async (request,response)=>{
     const allCards = await cardModel.find()
