@@ -8,6 +8,12 @@ import cardModel from "./models/card.model.js"
 // Gives our express server ability to "read and understand" JSON data.
 app.use(express.json())
 
+// this will allow us to configure the Cross-origin request for our server.
+import cors from "cors";
+// we are now allowing our server to support and accept request that are cross-origin by calling cors() constructor as a middleware (later on the option configuration).
+// with this now browser will not block CROS request coming from our frontend to this server.
+app.use(cors())
+
 //Request Point to fetch all cards
 app.get('/api/card', async (request,response)=>{
     const allCards = await cardModel.find()
