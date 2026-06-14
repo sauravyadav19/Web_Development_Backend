@@ -1,0 +1,7 @@
+In this module we explored how we can integrate seperately running Frontend and Backend in one Deployment system.
+
+-> we connected to DB, learned dotenv and path
+-> we created various request points (get , post , delete,patch)
+-> we created a frontend, request data from backend.
+-> in this we learn how to about CORS.
+-> then we brought frontend final build (npm run build) to backend's public folder and server it using express middle ware.
