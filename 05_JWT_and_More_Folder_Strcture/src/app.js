@@ -4,6 +4,10 @@ import route from './routes/user.route.js';
 // Step 2: Instantiate Express
 const app = express()
 
+// adding this middleware, gives it ability to work with JSON data, that we would be getting from our database.
+app.use(express.json())
+
+
 // Wiring our routes defined in other file (/routes/user.route.js), so our server knows about them and can server them.
 // every route that is defined in 'route' will be prefixed with '/api'
 // so the url would look like something this /api/ + whatever route we have defined in our router so /api<coming from this file>/user<coming from route>
