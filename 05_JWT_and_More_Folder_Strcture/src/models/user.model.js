@@ -8,22 +8,22 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
     username:{
         type:String,
-        unqiue:true,
-        require:true
+        unique:true,
+        required:true
     },
     email:{
         type:String,
-        unqiue:true,
-        require:true
+        unique:true,
+        required:true
     },
     password:{
         type:String,
-        require:true
+        required:true
 
     },
     name:{
         type:String,
-        require:true
+        required:true
     }
 })
 
