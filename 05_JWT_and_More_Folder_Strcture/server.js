@@ -9,6 +9,9 @@ dotenv.config({path:envPath})
 
 // import Express Instance from App.js
 import app from "./src/app.js";
+import connectToDB from "./src/config/database.js";
+
+connectToDB()
 
 // Start listening for incoming connnection on port sepcfified
 // changing the port to be soureced from .env file rather than hardcoding (good practice)
