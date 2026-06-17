@@ -7,6 +7,10 @@ const app = express()
 // adding this middleware, gives it ability to work with JSON data, that we would be getting from our database.
 app.use(express.json())
 
+// Importing this package and using at one of the middlewares allows our server to work with cookies that is requried for JWT
+import cookieParser from 'cookie-parser';
+app.use(cookieParser())
+
 
 // Wiring our routes defined in other file (/routes/user.route.js), so our server knows about them and can server them.
 // every route that is defined in 'route' will be prefixed with '/api'
