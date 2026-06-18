@@ -105,7 +105,7 @@ export async function getMyInfo(request,response) {
         // if its tampered with then the 'decoded' would be return 'invalid token' error that would be caught by our catch block.
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         // but if cookie is valid , we look it up our against our database find the user and return it.
-        const user = await userModel.findOne(new mongoose.Types.ObjectId(decoded.id));
+        const user = await userModel.findOne(new mongoose.Types.ObjectId({_id: decoded.id}));
         return response.send(user)
     }catch(error){
         response.send(error.message)
