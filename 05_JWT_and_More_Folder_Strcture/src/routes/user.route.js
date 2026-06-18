@@ -12,7 +12,7 @@ const router = express.Router()
 // why do we need this ? this keep the code modular and easy to work with with.
 
 // we are now importing the functions (controllers ) which were written here directly earlier from the file that now they have been shifted for cleaner and readable code.
-import {getAllUser,createUser,deleteUser, kindOfLogin} from "../controllers/router.controller.js"
+import {getAllUser,createUser,deleteUser, kindOfLogin, getMyInfo} from "../controllers/router.controller.js"
 // Get route simply gives out every details there is in database
 router.get("/user",getAllUser)
 
@@ -24,6 +24,8 @@ router.delete("/user/:id", deleteUser)
 
 // Get: to demonstrate login functionality.
 router.get("/protected", kindOfLogin)
+// Get : to get user's info from stored token.
+router.get("/getMe", getMyInfo)
 
 
 export default router

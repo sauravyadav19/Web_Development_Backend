@@ -2,7 +2,7 @@
 import userModel from "../models/user.model.js";
 // To create JWT tokens.
 import jwt from "jsonwebtoken";
-
+import mongoose from "mongoose";
 export async function getAllUser(request,response){
     try{
     const allUsers = await userModel.find()
@@ -81,4 +81,25 @@ export async function kindOfLogin(request,response){
         response.send(error.message)
     }
 
+}
+
+// this is a controller that brings everything we have built (creating user, token storage and login) all together
+export async function getMyInfo(request,response) {
+    try{
+        // in cookies, where our token is stored with the name of 'jwt_token' we gave that during its creation 'response.cookie('jwt_token', token)'
+        // we are now taking that token, if it exists (which means user has either logged in or newly registered)
+        const token = request.cookies.jwt_token
+        // but if does not exist; that means they need to login or register
+        if(token === undefined){
+            response.send("No cookies found, Login or Register")
+        }
+        // jwt.verify make sure that cookie is the exactly one we have signed and has not been tampered with.
+        // if its tampered with then the 'decoded' would be return 'invalid token' error that would be caught by our catch block.
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        // but if cookie is valid , we look it up our against our database find the user and return it.
+        const user = await userModel.findOne(new mongoose.Types.ObjectId(decoded.id));
+        return response.send(user)
+    }catch(error){
+        response.send(error.message)
+    }
 }
