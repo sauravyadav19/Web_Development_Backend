@@ -47,3 +47,35 @@ export async function deleteUser(request,response){
     }
 
 }
+
+export async function kindOfLogin(request,response){
+    // a simple login functionality 
+    // we are extracting the email and password from the request body
+    try{
+        const email = request.body.email
+        const password = request.body.password
+
+        // then we are running that email against our database to find if actually exist
+        // if it does:
+            // we know that 'user' variable would not be null
+            // in that case we can move forward with checking the password
+        // but if it does NOT exists:
+            // well we simply return with a generic message of "user not found"
+        const user = await userModel.findOne({email:email})
+
+        // Do not exist case
+        if(!user){
+             return response.send({"message": "User not Found"})
+        }
+        // in case exists : we are move forward with checking the password
+        // if its wrong we return with message of 'incorrect password'
+        if(password !== user.password){
+            return response.send({"message": "Incorrct password"})
+        }
+        // and if none of the above conditions fails which means, user exists and the password is correct we return the user.₹  
+        return response.send({"message": "successfully Logged in", "user":user})
+    }catch(error){
+        response.send(error.message)
+    }
+
+}
