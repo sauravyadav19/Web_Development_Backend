@@ -73,6 +73,9 @@ export async function kindOfLogin(request,response){
             return response.send({"message": "Incorrct password"})
         }
         // and if none of the above conditions fails which means, user exists and the password is correct we return the user.₹  
+        // now we will give our user a new token, that they can verify their identity.
+        const token = jwt.sign({id:user._id},process.env.JWT_SECRET)
+        response.cookie('jwt_token', token)
         return response.send({"message": "successfully Logged in", "user":user})
     }catch(error){
         response.send(error.message)
