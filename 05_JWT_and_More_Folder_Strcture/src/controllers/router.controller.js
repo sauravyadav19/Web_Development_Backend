@@ -2,7 +2,10 @@
 import userModel from "../models/user.model.js";
 // To create JWT tokens.
 import jwt from "jsonwebtoken";
+// need it for converting the stored user id from string in cookies to ObjectId.
 import mongoose from "mongoose";
+// this is to hash the password that we are going to store in our database; (never store plain password in Database EVER!)
+import bcrypt from "bcryptjs";
 export async function getAllUser(request,response){
     try{
     const allUsers = await userModel.find()
@@ -16,7 +19,11 @@ export async function getAllUser(request,response){
 export async function createUser(request,response){
     try{
         const {email,username,password,name} = request.body;
-        const newEntry = await userModel.create({email:email, username:username, password:password, name:name})
+        // we instead of storing the plain password in the db , we are now storing the hash (look up 'hashing salt' on google for more info on salt but in crux is its keep increases security)
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password,salt)
+        // we moved from plain password to a hash, so even if database leaks, user's password in still safe.
+        const newEntry = await userModel.create({email:email, username:username, password:hash, name:name})
         // We are creating a token (just a long string) that will contain the data in this case it would contain id,
         // because we are using that to create this token, in addtion it will have this sepecial signature that is created
         // using our JWT signature. 
@@ -69,7 +76,8 @@ export async function kindOfLogin(request,response){
         }
         // in case exists : we are move forward with checking the password
         // if its wrong we return with message of 'incorrect password'
-        if(password !== user.password){
+        // as we moved from plain password storage to hashing that password and storing the hash, we would be now comparing the hash to check if user has entered the correct password
+        if(!await bcrypt.compare(password,user.password)){
             return response.send({"message": "Incorrct password"})
         }
         // and if none of the above conditions fails which means, user exists and the password is correct we return the user.₹  
